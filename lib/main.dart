@@ -24,6 +24,32 @@ class MainApp extends StatelessWidget {
                   fallbackWidth: 100,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: size / 2,
+                      child: const Center(
+                        child: Text(
+                          '** ℃',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: size / 2,
+                      child: const Center(
+                        child: Text(
+                          '** ℃',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
