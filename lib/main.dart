@@ -9,10 +9,23 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    final size = MediaQuery.of(context).size.width / 2;
+    return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: size,
+                height: size,
+                child: const Placeholder(
+                  fallbackHeight: 100,
+                  fallbackWidth: 100,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
