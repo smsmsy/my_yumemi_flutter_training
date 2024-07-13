@@ -1,77 +1,105 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  _MainAppState createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  final GlobalKey _textKey = GlobalKey();
+  double _textHeight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderBox =
+          _textKey.currentContext!.findRenderObject()! as RenderBox;
+      setState(() {
+        _textHeight = renderBox.size.height;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width / 2;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final placeholderHeight = screenWidth / 2;
+    const paddingHeight = 16.0 * 2; // 上下のPaddingの合計
+
+    final topWidgetsHeight = placeholderHeight + _textHeight + paddingHeight;
+    final topOffset = (screenHeight - topWidgetsHeight) / 2;
+
+    final fontSize = Theme.of(context).textTheme.labelLarge?.fontSize;
     return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: size,
-                height: size,
-                child: const Placeholder(
-                  fallbackHeight: 100,
-                  fallbackWidth: 100,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: size / 2,
-                      child: const Center(
-                        child: Text(
-                          '** ℃',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: size / 2,
-                      child: const Center(
-                        child: Text(
-                          '** ℃',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 80),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: size / 2,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text('Close'),
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                SizedBox(height: topOffset),
+                const Center(
+                  child: FractionallySizedBox(
+                    widthFactor: 0.5,
+                    child: AspectRatio(
+                      aspectRatio: 1 / 1,
+                      child: Placeholder(),
                     ),
                   ),
-                  SizedBox(
-                    width: size / 2,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text('Reload'),
+                ),
+                FractionallySizedBox(
+                  widthFactor: 0.5,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      key: _textKey,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          '** ℃',
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        Text(
+                          '** ℃',
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(height: 80),
+                FractionallySizedBox(
+                  widthFactor: 0.5,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text('Close'),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text('Reload'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
